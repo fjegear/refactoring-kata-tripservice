@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
-using TripServiceKata.Exception;
-using TripServiceKata.User;
+using TripServiceKata.Exceptions;
+using TripServiceKata.Users;
 
-namespace TripServiceKata.Trip
+namespace TripServiceKata.Trips
 {
     public class TripService
     {
-        public List<Trip> GetTripsByUser(User.User user)
+        public List<Trip> GetTripsByUser(User user)
         {
             List<Trip> tripList = new List<Trip>();
-            User.User loggedUser = UserSession.GetInstance().GetLoggedUser();
+            User loggedUser = UserSession.GetInstance().GetLoggedUser();
             bool isFriend = false;
             if (loggedUser != null)
             {
-                foreach(User.User friend in user.GetFriends())
+                foreach(User friend in user.GetFriends())
                 {
                     if (friend.Equals(loggedUser))
                     {

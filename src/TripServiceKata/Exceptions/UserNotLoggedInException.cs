@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace TripServiceKata.Exception
+namespace TripServiceKata.Exceptions
 {
     [Serializable]
     public class UserNotLoggedInException : System.Exception
     {
-        
+
     }
 }
