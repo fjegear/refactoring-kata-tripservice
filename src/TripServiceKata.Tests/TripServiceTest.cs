@@ -7,7 +7,9 @@ namespace TripServiceKata.Tests
 {
     public class TripServiceTest
     {
-        private static User? _loggedInUser = null;
+        private static User? _loggedInUser;
+        private static User? _guest = null;
+        private static User _user = new User();
         private readonly TestableTripService _tripService;
 
         public TripServiceTest()
@@ -19,10 +21,10 @@ namespace TripServiceKata.Tests
         public void Should_not_allow_to_get_trips_When_user_is_not_logged_in()
         {
             //Arrange
-            _loggedInUser = null;
+            _loggedInUser = _guest;
 
             //Act
-            var action = () => _tripService.GetTripsByUser(new User());
+            var action = () => _tripService.GetTripsByUser(_user);
 
             //Assert
             action.Should().Throw<UserNotLoggedInException>();
