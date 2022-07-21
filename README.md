@@ -4,4 +4,4 @@ Trip Service refactoring kata is a famous kata exercise for refactoring code whi
 
 The original code is in the main branch, updated to VS2022 and net6.0
 
-For refactoring process, the refactoring branch has been created.
+For refactoring work, the refactoring branch has been created.
