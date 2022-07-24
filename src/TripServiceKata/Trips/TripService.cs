@@ -11,11 +11,9 @@ namespace TripServiceKata.Trips
             User loggedUser = GetLoggedUser();
             if (loggedUser != null)
             {
-                if (user.IsFriendOf(loggedUser))
-                {
-                    return GetTripsBy(user);
-                }
-                return NoTrips();
+                return user.IsFriendOf(loggedUser)
+                    ? GetTripsBy(user)
+                    : NoTrips();
             }
             else
             {
