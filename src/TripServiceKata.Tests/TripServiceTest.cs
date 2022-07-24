@@ -40,10 +40,11 @@ namespace TripServiceKata.Tests
         {
             //Arrange
             _loggedInUser = _registeredUser;
-            var notFriend = new User();
-            notFriend.AddFriend(_user);
-            notFriend.AddTrip(_trip1);
-            notFriend.AddTrip(_trip2);
+
+            var notFriend = UserBuilder.CreateBuilder()
+                .WithFriends(_user)
+                .WithTrips(_trip1, _trip2)
+                .Build();
 
             //Act
             var trips = _tripService.GetTripsByUser(notFriend);
@@ -57,11 +58,11 @@ namespace TripServiceKata.Tests
         {
             //Arrange
             _loggedInUser = _registeredUser;
-            var friend = new User();
-            friend.AddFriend(_user);
-            friend.AddFriend(_loggedInUser);
-            friend.AddTrip(_trip1);
-            friend.AddTrip(_trip2);
+
+            var friend = UserBuilder.CreateBuilder()
+                .WithFriends(_user, _loggedInUser)
+                .WithTrips(_trip1, _trip2)
+                .Build();
 
             //Act
             var trips = _tripService.GetTripsByUser(friend);
