@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GuardNet;
+using System.Collections.Generic;
 using TripServiceKata.Exceptions;
 using TripServiceKata.Users;
 
@@ -8,17 +9,12 @@ namespace TripServiceKata.Trips
     {
         public List<Trip> GetTripsByUser(User user)
         {
-            User loggedUser = GetLoggedUser();
-            if (loggedUser != null)
-            {
-                return user.IsFriendOf(loggedUser)
-                    ? GetTripsBy(user)
-                    : NoTrips();
-            }
-            else
-            {
-                throw new UserNotLoggedInException();
-            }
+            User loggedUser = GetLoggedInUser();
+            Guard.NotNull<User, UserNotLoggedInException>(loggedUser);
+
+            return user.IsFriendOf(loggedUser)
+                ? GetTripsBy(user)
+                : NoTrips();
         }
 
         private List<Trip> NoTrips()
@@ -31,7 +27,7 @@ namespace TripServiceKata.Trips
             return TripDAO.FindTripsByUser(user);
         }
 
-        protected virtual User GetLoggedUser()
+        protected virtual User GetLoggedInUser()
         {
             return UserSession.GetInstance().GetLoggedUser();
         }

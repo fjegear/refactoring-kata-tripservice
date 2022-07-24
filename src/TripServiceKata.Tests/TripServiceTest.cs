@@ -73,7 +73,7 @@ namespace TripServiceKata.Tests
 
         private class TestableTripService : TripService
         {
-            protected override User GetLoggedUser()
+            protected override User GetLoggedInUser()
             {
                 return _loggedInUser!;
             }
