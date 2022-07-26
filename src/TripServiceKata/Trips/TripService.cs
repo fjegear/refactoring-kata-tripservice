@@ -7,6 +7,20 @@ namespace TripServiceKata.Trips
 {
     public class TripService
     {
+        private readonly IUserSession _userSession;
+        private readonly ITripDAO _tripDAO;
+
+        public TripService() :
+            this(UserSession.GetInstance(), new TripDAO())
+        {
+        }
+
+        public TripService(IUserSession userSession, ITripDAO tripDAO)
+        {
+            _userSession = userSession ?? throw new ArgumentNullException(nameof(userSession));
+            _tripDAO = tripDAO ?? throw new ArgumentNullException(nameof(tripDAO));
+        }
+
         public List<Trip> GetTripsByUser(User user)
         {
             User loggedUser = GetLoggedInUser();
@@ -24,12 +38,12 @@ namespace TripServiceKata.Trips
 
         protected virtual List<Trip> GetTripsBy(User user)
         {
-            return TripDAO.FindTripsByUser(user);
+            return _tripDAO.GetTripsBy(user);
         }
 
         protected virtual User GetLoggedInUser()
         {
-            return UserSession.GetInstance().GetLoggedUser();
+            return _userSession.GetLoggedUser();
         }
     }
 }

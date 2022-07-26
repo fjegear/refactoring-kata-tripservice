@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NSubstitute;
 using TripServiceKata.Exceptions;
 using TripServiceKata.Trips;
 using TripServiceKata.Users;
@@ -16,10 +17,17 @@ namespace TripServiceKata.Tests
         private static Trip _trip2 = new Trip();
 
         private readonly TestableTripService _tripService;
+        private readonly TripService _productionTripService;
+        private readonly IUserSession _userSession;
+        private readonly ITripDAO _tripDAO;
 
         public TripServiceTest()
         {
+            _userSession = Substitute.For<IUserSession>();
+            _tripDAO = Substitute.For<ITripDAO>();
+
             _tripService = new TestableTripService();
+            _productionTripService = new TripService(_userSession, _tripDAO);
         }
 
         [Fact]
@@ -27,9 +35,11 @@ namespace TripServiceKata.Tests
         {
             //Arrange
             _loggedInUser = _guest;
+            _userSession.GetLoggedUser().Returns(_loggedInUser);
+            _tripDAO.GetTripsBy(_user).Returns(_user.Trips());
 
             //Act
-            var action = () => _tripService.GetTripsByUser(_user);
+            var action = () => _productionTripService.GetTripsByUser(_user);
 
             //Assert
             action.Should().Throw<UserNotLoggedInException>();
@@ -46,8 +56,11 @@ namespace TripServiceKata.Tests
                 .WithTrips(_trip1, _trip2)
                 .Build();
 
+            _userSession.GetLoggedUser().Returns(_loggedInUser);
+            _tripDAO.GetTripsBy(notFriend).Returns(notFriend.Trips());
+
             //Act
-            var trips = _tripService.GetTripsByUser(notFriend);
+            var trips = _productionTripService.GetTripsByUser(notFriend);
 
             //Assert
             trips.Should().HaveCount(ZeroTrips);
@@ -64,8 +77,11 @@ namespace TripServiceKata.Tests
                 .WithTrips(_trip1, _trip2)
                 .Build();
 
+            _userSession.GetLoggedUser().Returns(_loggedInUser);
+            _tripDAO.GetTripsBy(friend).Returns(friend.Trips());
+
             //Act
-            var trips = _tripService.GetTripsByUser(friend);
+            var trips = _productionTripService.GetTripsByUser(friend);
 
             //Assert
             trips.Should().HaveCount(friend.Trips().Count);
