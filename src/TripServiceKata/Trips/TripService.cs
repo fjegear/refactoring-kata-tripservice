@@ -23,27 +23,17 @@ namespace TripServiceKata.Trips
 
         public List<Trip> GetTripsByUser(User user)
         {
-            User loggedUser = GetLoggedInUser();
+            User loggedUser = _userSession.GetLoggedUser();
             Guard.NotNull<User, UserNotLoggedInException>(loggedUser);
 
             return user.IsFriendOf(loggedUser)
-                ? GetTripsBy(user)
+                ? _tripDAO.GetTripsBy(user)
                 : NoTrips();
         }
 
         private List<Trip> NoTrips()
         {
             return Enumerable.Empty<Trip>().ToList();
-        }
-
-        protected virtual List<Trip> GetTripsBy(User user)
-        {
-            return _tripDAO.GetTripsBy(user);
-        }
-
-        protected virtual User GetLoggedInUser()
-        {
-            return _userSession.GetLoggedUser();
         }
     }
 }

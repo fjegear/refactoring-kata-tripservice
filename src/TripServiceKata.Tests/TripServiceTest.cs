@@ -16,8 +16,7 @@ namespace TripServiceKata.Tests
         private static Trip _trip1 = new Trip();
         private static Trip _trip2 = new Trip();
 
-        private readonly TestableTripService _tripService;
-        private readonly TripService _productionTripService;
+        private readonly TripService _tripService;
         private readonly IUserSession _userSession;
         private readonly ITripDAO _tripDAO;
 
@@ -26,8 +25,7 @@ namespace TripServiceKata.Tests
             _userSession = Substitute.For<IUserSession>();
             _tripDAO = Substitute.For<ITripDAO>();
 
-            _tripService = new TestableTripService();
-            _productionTripService = new TripService(_userSession, _tripDAO);
+            _tripService = new TripService(_userSession, _tripDAO);
         }
 
         [Fact]
@@ -39,7 +37,7 @@ namespace TripServiceKata.Tests
             _tripDAO.GetTripsBy(_user).Returns(_user.Trips());
 
             //Act
-            var action = () => _productionTripService.GetTripsByUser(_user);
+            var action = () => _tripService.GetTripsByUser(_user);
 
             //Assert
             action.Should().Throw<UserNotLoggedInException>();
@@ -60,7 +58,7 @@ namespace TripServiceKata.Tests
             _tripDAO.GetTripsBy(notFriend).Returns(notFriend.Trips());
 
             //Act
-            var trips = _productionTripService.GetTripsByUser(notFriend);
+            var trips = _tripService.GetTripsByUser(notFriend);
 
             //Assert
             trips.Should().HaveCount(ZeroTrips);
@@ -81,23 +79,10 @@ namespace TripServiceKata.Tests
             _tripDAO.GetTripsBy(friend).Returns(friend.Trips());
 
             //Act
-            var trips = _productionTripService.GetTripsByUser(friend);
+            var trips = _tripService.GetTripsByUser(friend);
 
             //Assert
             trips.Should().HaveCount(friend.Trips().Count);
-        }
-
-        private class TestableTripService : TripService
-        {
-            protected override User GetLoggedInUser()
-            {
-                return _loggedInUser!;
-            }
-
-            protected override List<Trip> GetTripsBy(User user)
-            {
-                return user.Trips();
-            }
         }
     }
 }
